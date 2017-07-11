@@ -73,11 +73,13 @@ export default class Timeline extends Component {
     const groupsChange = groups !== nextProps.groups
     const optionsChange = options !== nextProps.options
     const customTimesChange = customTimes !== nextProps.customTimes
+    const selectionChange = selection !== nextProps.selection
 
     return itemsChange ||
       groupsChange ||
       optionsChange ||
-      customTimesChange
+      customTimesChange ||
+      selectionChange
   }
 
   init() {
@@ -86,6 +88,7 @@ export default class Timeline extends Component {
       groups,
       options,
       selection,
+      selectionOptions,
       customTimes,
       animate = true,
       currentTime
@@ -106,7 +109,7 @@ export default class Timeline extends Component {
 
     this.$el.setOptions(timelineOptions)
     this.$el.setItems(items)
-    this.$el.setSelection(selection)
+    this.$el.setSelection(selection, selectionOptions)
 
     if (hasGroups) {
       this.$el.setGroups(groups)
@@ -149,6 +152,7 @@ Timeline.propTypes = assign({
   groups: PropTypes.array,
   options: PropTypes.object,
   selection: PropTypes.array,
+  selectionOptions: PropTypes.object,
   customTimes: PropTypes.shape({
     datetime: PropTypes.instanceOf(Date),
     id: PropTypes.string
@@ -169,5 +173,6 @@ Timeline.defaultProps = assign({
   groups: [],
   options: {},
   selection: [],
+  selectionOptions: {},
   customTimes: {},
 }, eventDefaultProps)

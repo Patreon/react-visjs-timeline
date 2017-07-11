@@ -115,8 +115,9 @@ var Timeline = function (_Component) {
       var groupsChange = groups !== nextProps.groups;
       var optionsChange = options !== nextProps.options;
       var customTimesChange = customTimes !== nextProps.customTimes;
+      var selectionChange = selection !== nextProps.selection;
 
-      return itemsChange || groupsChange || optionsChange || customTimesChange;
+      return itemsChange || groupsChange || optionsChange || customTimesChange || selectionChange;
     }
   }, {
     key: 'init',
@@ -128,6 +129,7 @@ var Timeline = function (_Component) {
           groups = _props2.groups,
           options = _props2.options,
           selection = _props2.selection,
+          selectionOptions = _props2.selectionOptions,
           customTimes = _props2.customTimes,
           _props2$animate = _props2.animate,
           animate = _props2$animate === undefined ? true : _props2$animate,
@@ -149,7 +151,7 @@ var Timeline = function (_Component) {
 
       this.$el.setOptions(timelineOptions);
       this.$el.setItems(items);
-      this.$el.setSelection(selection);
+      this.$el.setSelection(selection, selectionOptions);
 
       if (hasGroups) {
         this.$el.setGroups(groups);
@@ -201,6 +203,7 @@ Timeline.propTypes = (0, _assign2.default)({
   groups: _react.PropTypes.array,
   options: _react.PropTypes.object,
   selection: _react.PropTypes.array,
+  selectionOptions: _react.PropTypes.object,
   customTimes: _react.PropTypes.shape({
     datetime: _react.PropTypes.instanceOf(Date),
     id: _react.PropTypes.string
@@ -214,5 +217,6 @@ Timeline.defaultProps = (0, _assign2.default)({
   groups: [],
   options: {},
   selection: [],
+  selectionOptions: {},
   customTimes: {}
 }, eventDefaultProps);
