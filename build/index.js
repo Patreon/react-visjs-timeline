@@ -6,13 +6,17 @@ Object.defineProperty(exports, "__esModule", {
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-var _vis = require('vis');
+var _visTimelineGraph2d = require('vis/dist/vis-timeline-graph2d.min');
 
-var _vis2 = _interopRequireDefault(_vis);
+var _visTimelineGraph2d2 = _interopRequireDefault(_visTimelineGraph2d);
 
 var _react = require('react');
 
 var _react2 = _interopRequireDefault(_react);
+
+var _propTypes = require('prop-types');
+
+var _propTypes2 = _interopRequireDefault(_propTypes);
 
 var _difference = require('lodash/difference');
 
@@ -53,7 +57,7 @@ var eventPropTypes = {};
 var eventDefaultProps = {};
 
 (0, _each2.default)(events, function (event) {
-  eventPropTypes[event] = _react.PropTypes.func, eventDefaultProps[event + 'Handler'] = noop;
+  eventPropTypes[event] = _propTypes2.default.func, eventDefaultProps[event + 'Handler'] = noop;
 });
 
 var Timeline = function (_Component) {
@@ -87,7 +91,7 @@ var Timeline = function (_Component) {
       var container = this.refs.container;
 
 
-      this.$el = new _vis2.default.Timeline(container);
+      this.$el = new _visTimelineGraph2d2.default.Timeline(container, undefined, this.props.options);
 
       events.forEach(function (event) {
         _this2.$el.on(event, _this2.props[event + 'Handler']);
@@ -129,14 +133,14 @@ var Timeline = function (_Component) {
           groups = _props2.groups,
           options = _props2.options,
           selection = _props2.selection,
-          selectionOptions = _props2.selectionOptions,
+          _props2$selectionOpti = _props2.selectionOptions,
+          selectionOptions = _props2$selectionOpti === undefined ? {} : _props2$selectionOpti,
           customTimes = _props2.customTimes,
           _props2$animate = _props2.animate,
           animate = _props2$animate === undefined ? true : _props2$animate,
           currentTime = _props2.currentTime;
 
 
-      var hasGroups = groups.length > 0;
       var timelineOptions = options;
 
       if (animate) {
@@ -150,12 +154,15 @@ var Timeline = function (_Component) {
       }
 
       this.$el.setOptions(timelineOptions);
+
+      if (groups.length > 0) {
+        var groupsDataset = new _visTimelineGraph2d2.default.DataSet();
+        groupsDataset.add(groups);
+        this.$el.setGroups(groupsDataset);
+      }
+
       this.$el.setItems(items);
       this.$el.setSelection(selection, selectionOptions);
-
-      if (hasGroups) {
-        this.$el.setGroups(groups);
-      }
 
       if (currentTime) {
         this.$el.setCurrentTime(currentTime);
@@ -199,17 +206,17 @@ exports.default = Timeline;
 
 
 Timeline.propTypes = (0, _assign2.default)({
-  items: _react.PropTypes.array,
-  groups: _react.PropTypes.array,
-  options: _react.PropTypes.object,
-  selection: _react.PropTypes.array,
-  selectionOptions: _react.PropTypes.object,
-  customTimes: _react.PropTypes.shape({
-    datetime: _react.PropTypes.instanceOf(Date),
-    id: _react.PropTypes.string
+  items: _propTypes2.default.array,
+  groups: _propTypes2.default.array,
+  options: _propTypes2.default.object,
+  selection: _propTypes2.default.array,
+  selectionOptions: _propTypes2.default.object,
+  customTimes: _propTypes2.default.shape({
+    datetime: _propTypes2.default.instanceOf(Date),
+    id: _propTypes2.default.string
   }),
-  animate: _react.PropTypes.oneOfType([_react.PropTypes.bool, _react.PropTypes.object]),
-  currentTime: _react.PropTypes.oneOfType([_react.PropTypes.string, _react.PropTypes.instanceOf(Date), _react.PropTypes.number])
+  animate: _propTypes2.default.oneOfType([_propTypes2.default.bool, _propTypes2.default.object]),
+  currentTime: _propTypes2.default.oneOfType([_propTypes2.default.string, _propTypes2.default.instanceOf(Date), _propTypes2.default.number])
 }, eventPropTypes);
 
 Timeline.defaultProps = (0, _assign2.default)({
