@@ -1,5 +1,6 @@
-import vis from 'vis'
-import React, { Component, PropTypes } from 'react'
+import vis from 'vis/dist/vis-timeline-graph2d.min'
+import React, { Component } from 'react'
+import PropTypes from 'prop-types'
 import difference from 'lodash/difference'
 import intersection from 'lodash/intersection'
 import each from 'lodash/each'
@@ -47,7 +48,7 @@ export default class Timeline extends Component {
   componentDidMount() {
     const { container } = this.refs
 
-    this.$el = new vis.Timeline(container)
+    this.$el = new vis.Timeline(container, undefined, this.props.options)
 
     events.forEach(event => {
       this.$el.on(event, this.props[`${event}Handler`])
@@ -88,13 +89,12 @@ export default class Timeline extends Component {
       groups,
       options,
       selection,
-      selectionOptions,
+      selectionOptions = {},
       customTimes,
       animate = true,
       currentTime
     } = this.props
 
-    const hasGroups = groups.length > 0
     let timelineOptions = options
 
     if (animate) {
@@ -108,12 +108,15 @@ export default class Timeline extends Component {
     }
 
     this.$el.setOptions(timelineOptions)
+
+    if (groups.length > 0) {
+      const groupsDataset = new vis.DataSet()
+      groupsDataset.add(groups)
+      this.$el.setGroups(groupsDataset)
+    }
+
     this.$el.setItems(items)
     this.$el.setSelection(selection, selectionOptions)
-
-    if (hasGroups) {
-      this.$el.setGroups(groups)
-    }
 
     if (currentTime) {
       this.$el.setCurrentTime(currentTime)
